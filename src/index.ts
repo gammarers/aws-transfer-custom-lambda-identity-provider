@@ -1,10 +1,10 @@
+import * as crypto from 'crypto';
 import * as path from 'path';
 import * as cdk from 'aws-cdk-lib';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as transfer from 'aws-cdk-lib/aws-transfer';
 import { Construct } from 'constructs';
-import crc from 'crc';
 
 export interface TransferCustomLambdaIdentityProviderProps {
   readonly customHostname?: string;
@@ -19,7 +19,9 @@ export class TransferCustomLambdaIdentityProvider extends Construct {
     const account = cdk.Stack.of(this).account;
     const region = cdk.Stack.of(this).region;
 
-    const nameSuffix = crc.crc32(cdk.Names.uniqueId(this)).toString(16);
+    const nameSuffix = crypto.createHash('shake256', { outputLength: 4 })
+      .update(cdk.Names.uniqueId(this))
+      .digest('hex');
 
     // 👇Create Lambda Execution role.
     const lambdaExecutionRole = new iam.Role(this, 'LambdaExecutionRole', {
