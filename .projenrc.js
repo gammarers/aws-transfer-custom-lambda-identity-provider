@@ -11,5 +11,10 @@ const project = new awscdk.AwsCdkConstructLibrary({
   // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
   devDeps: [],
   // packageName: undefined,  /* The "name" in package.json. */
+  jestOptions: {
+    jestConfig: {
+      snapshotSerializers: ['<rootDir>/test/snapshot-plugin.ts'],
+    },
+  },
 });
 project.synth();

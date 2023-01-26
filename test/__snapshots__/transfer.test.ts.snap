@@ -17,7 +17,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": "cdk-hnb659fds-assets-123456789012-us-east-1",
-          "S3Key": "0448e7ac1f5baa77edacec342b2f68d3c40cf6341a444056006803aa5cd09714.zip",
+          "S3Key": "HASH.zip",
         },
         "Description": "A function to lookup and return user data from AWS Secrets Manager.",
         "FunctionName": "sftp-user-authentication-func-6c4f6c0f",
