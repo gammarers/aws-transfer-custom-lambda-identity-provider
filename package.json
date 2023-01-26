@@ -62,12 +62,19 @@
     "constructs": "^10.0.5"
   },
   "keywords": [
-    "cdk"
+    "aws",
+    "aws-cdk",
+    "cdk",
+    "sftp",
+    "transfer"
   ],
   "main": "lib/index.js",
   "license": "Apache-2.0",
   "version": "0.0.0",
   "jest": {
+    "snapshotSerializers": [
+      "<rootDir>/test/snapshot-plugin.ts"
+    ],
     "testMatch": [
       "<rootDir>/src/**/__tests__/**/*.ts?(x)",
       "<rootDir>/(test|src)/**/*(*.)@(spec|test).ts?(x)"
