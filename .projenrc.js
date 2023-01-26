@@ -9,11 +9,13 @@ const project = new awscdk.AwsCdkConstructLibrary({
   keywords: ['aws', 'cdk', 'aws-cdk', 'transfer', 'sftp'],
   deps: [],
   // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
-  devDeps: [],
+  devDeps: [
+    '@yicr/jest-serializer-cdk-asset',
+  ],
   // packageName: undefined,  /* The "name" in package.json. */
   jestOptions: {
     jestConfig: {
-      snapshotSerializers: ['<rootDir>/test/snapshot-plugin.ts'],
+      snapshotSerializers: ['<rootDir>/node_modules/@yicr/jest-serializer-cdk-asset'],
     },
   },
 });
