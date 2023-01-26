@@ -21,6 +21,10 @@
       "type": "build"
     },
     {
+      "name": "@yicr/jest-serializer-cdk-asset",
+      "type": "build"
+    },
+    {
       "name": "aws-cdk-lib",
       "version": "2.61.0",
       "type": "build"
