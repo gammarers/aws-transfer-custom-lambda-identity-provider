@@ -1,5 +1,6 @@
 {
   "name": "@yicr/transfer-custom-lambda-identity-provider",
+  "description": "This is a Simple Transfer AWS CDK Construct",
   "repository": {
     "type": "git",
     "url": "https://github.com/yicr/transfer-custom-lambda-identity-provider.git"
@@ -71,6 +72,9 @@
   ],
   "main": "lib/index.js",
   "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "0.0.0",
   "jest": {
     "snapshotSerializers": [
