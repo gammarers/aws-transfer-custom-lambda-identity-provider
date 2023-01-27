@@ -4,7 +4,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   authorAddress: 'yicr@users.noreply.github.com',
   cdkVersion: '2.61.0',
   defaultReleaseBranch: 'main',
-  name: 'transfer-custom-lambda-identity-provider',
+  name: '@yicr/transfer-custom-lambda-identity-provider',
   repositoryUrl: 'https://github.com/yicr/transfer-custom-lambda-identity-provider.git',
   keywords: ['aws', 'cdk', 'aws-cdk', 'transfer', 'sftp'],
   deps: [],
