@@ -2,39 +2,39 @@
 
 ## Constructs <a name="Constructs" id="Constructs"></a>
 
-### TransferCustomLambdaIdentityProvider <a name="TransferCustomLambdaIdentityProvider" id="transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider"></a>
+### TransferCustomLambdaIdentityProvider <a name="TransferCustomLambdaIdentityProvider" id="@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider"></a>
 
-#### Initializers <a name="Initializers" id="transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.Initializer"></a>
+#### Initializers <a name="Initializers" id="@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.Initializer"></a>
 
 ```typescript
-import { TransferCustomLambdaIdentityProvider } from 'transfer-custom-lambda-identity-provider'
+import { TransferCustomLambdaIdentityProvider } from '@yicr/transfer-custom-lambda-identity-provider'
 
 new TransferCustomLambdaIdentityProvider(scope: Construct, id: string, props: TransferCustomLambdaIdentityProviderProps)
 ```
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.Initializer.parameter.scope">scope</a></code> | <code>constructs.Construct</code> | *No description.* |
-| <code><a href="#transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.Initializer.parameter.id">id</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.Initializer.parameter.props">props</a></code> | <code><a href="#transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProviderProps">TransferCustomLambdaIdentityProviderProps</a></code> | *No description.* |
+| <code><a href="#@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.Initializer.parameter.scope">scope</a></code> | <code>constructs.Construct</code> | *No description.* |
+| <code><a href="#@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.Initializer.parameter.id">id</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.Initializer.parameter.props">props</a></code> | <code><a href="#@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProviderProps">TransferCustomLambdaIdentityProviderProps</a></code> | *No description.* |
 
 ---
 
-##### `scope`<sup>Required</sup> <a name="scope" id="transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.Initializer.parameter.scope"></a>
+##### `scope`<sup>Required</sup> <a name="scope" id="@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.Initializer.parameter.scope"></a>
 
 - *Type:* constructs.Construct
 
 ---
 
-##### `id`<sup>Required</sup> <a name="id" id="transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.Initializer.parameter.id"></a>
+##### `id`<sup>Required</sup> <a name="id" id="@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.Initializer.parameter.id"></a>
 
 - *Type:* string
 
 ---
 
-##### `props`<sup>Required</sup> <a name="props" id="transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.Initializer.parameter.props"></a>
+##### `props`<sup>Required</sup> <a name="props" id="@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.Initializer.parameter.props"></a>
 
-- *Type:* <a href="#transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProviderProps">TransferCustomLambdaIdentityProviderProps</a>
+- *Type:* <a href="#@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProviderProps">TransferCustomLambdaIdentityProviderProps</a>
 
 ---
 
@@ -42,11 +42,11 @@ new TransferCustomLambdaIdentityProvider(scope: Construct, id: string, props: Tr
 
 | **Name** | **Description** |
 | --- | --- |
-| <code><a href="#transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.toString">toString</a></code> | Returns a string representation of this construct. |
 
 ---
 
-##### `toString` <a name="toString" id="transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.toString"></a>
+##### `toString` <a name="toString" id="@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.toString"></a>
 
 ```typescript
 public toString(): string
@@ -58,14 +58,14 @@ Returns a string representation of this construct.
 
 | **Name** | **Description** |
 | --- | --- |
-| <code><a href="#transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+| <code><a href="#@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
 
 ---
 
-##### `isConstruct` <a name="isConstruct" id="transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.isConstruct"></a>
+##### `isConstruct` <a name="isConstruct" id="@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.isConstruct"></a>
 
 ```typescript
-import { TransferCustomLambdaIdentityProvider } from 'transfer-custom-lambda-identity-provider'
+import { TransferCustomLambdaIdentityProvider } from '@yicr/transfer-custom-lambda-identity-provider'
 
 TransferCustomLambdaIdentityProvider.isConstruct(x: any)
 ```
@@ -86,7 +86,7 @@ library can be accidentally installed, and `instanceof` will behave
 unpredictably. It is safest to avoid using `instanceof`, and using
 this type-testing method instead.
 
-###### `x`<sup>Required</sup> <a name="x" id="transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.isConstruct.parameter.x"></a>
+###### `x`<sup>Required</sup> <a name="x" id="@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.isConstruct.parameter.x"></a>
 
 - *Type:* any
 
@@ -98,11 +98,11 @@ Any object.
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
 
 ---
 
-##### `node`<sup>Required</sup> <a name="node" id="transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.property.node"></a>
+##### `node`<sup>Required</sup> <a name="node" id="@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProvider.property.node"></a>
 
 ```typescript
 public readonly node: Node;
@@ -117,12 +117,12 @@ The tree node.
 
 ## Structs <a name="Structs" id="Structs"></a>
 
-### TransferCustomLambdaIdentityProviderProps <a name="TransferCustomLambdaIdentityProviderProps" id="transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProviderProps"></a>
+### TransferCustomLambdaIdentityProviderProps <a name="TransferCustomLambdaIdentityProviderProps" id="@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProviderProps"></a>
 
-#### Initializer <a name="Initializer" id="transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProviderProps.Initializer"></a>
+#### Initializer <a name="Initializer" id="@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProviderProps.Initializer"></a>
 
 ```typescript
-import { TransferCustomLambdaIdentityProviderProps } from 'transfer-custom-lambda-identity-provider'
+import { TransferCustomLambdaIdentityProviderProps } from '@yicr/transfer-custom-lambda-identity-provider'
 
 const transferCustomLambdaIdentityProviderProps: TransferCustomLambdaIdentityProviderProps = { ... }
 ```
@@ -131,12 +131,12 @@ const transferCustomLambdaIdentityProviderProps: TransferCustomLambdaIdentityPro
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProviderProps.property.customHostname">customHostname</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProviderProps.property.route53HostedZoneId">route53HostedZoneId</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProviderProps.property.customHostname">customHostname</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProviderProps.property.route53HostedZoneId">route53HostedZoneId</a></code> | <code>string</code> | *No description.* |
 
 ---
 
-##### `customHostname`<sup>Optional</sup> <a name="customHostname" id="transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProviderProps.property.customHostname"></a>
+##### `customHostname`<sup>Optional</sup> <a name="customHostname" id="@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProviderProps.property.customHostname"></a>
 
 ```typescript
 public readonly customHostname: string;
@@ -146,7 +146,7 @@ public readonly customHostname: string;
 
 ---
 
-##### `route53HostedZoneId`<sup>Optional</sup> <a name="route53HostedZoneId" id="transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProviderProps.property.route53HostedZoneId"></a>
+##### `route53HostedZoneId`<sup>Optional</sup> <a name="route53HostedZoneId" id="@yicr/transfer-custom-lambda-identity-provider.TransferCustomLambdaIdentityProviderProps.property.route53HostedZoneId"></a>
 
 ```typescript
 public readonly route53HostedZoneId: string;
