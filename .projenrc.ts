@@ -1,8 +1,10 @@
-const { awscdk, javascript } = require('projen');
+import { awscdk, javascript } from 'projen';
+
 const project = new awscdk.AwsCdkConstructLibrary({
   author: 'yicr',
   authorAddress: 'yicr@users.noreply.github.com',
   cdkVersion: '2.61.0',
+  projenrcTs: true,
   defaultReleaseBranch: 'main',
   name: '@yicr/transfer-custom-lambda-identity-provider',
   description: 'This is a Simple Transfer AWS CDK Construct',
