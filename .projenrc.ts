@@ -20,5 +20,14 @@ const project = new awscdk.AwsCdkConstructLibrary({
     },
   },
   npmAccess: javascript.NpmAccess.PUBLIC,
+  depsUpgradeOptions: {
+    workflowOptions: {
+      labels: ['auto-approve', 'auto-merge'],
+    },
+  },
+  autoApproveOptions: {
+    secret: 'GITHUB_TOKEN',
+    allowedUsernames: ['yicr'],
+  },
 });
 project.synth();
