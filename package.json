@@ -39,7 +39,7 @@
     "@types/node": "^16",
     "@typescript-eslint/eslint-plugin": "^5",
     "@typescript-eslint/parser": "^5",
-    "@yicr/jest-serializer-cdk-asset": "^0.2.73",
+    "@yicr/jest-serializer-cdk-asset": "^0.2.74",
     "aws-cdk-lib": "2.61.0",
     "constructs": "10.0.5",
     "eslint": "^8",
