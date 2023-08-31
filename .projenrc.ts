@@ -12,11 +12,11 @@ const project = new awscdk.AwsCdkConstructLibrary({
   keywords: ['aws', 'cdk', 'aws-cdk', 'transfer', 'sftp'],
   deps: [],
   devDeps: [
-    '@yicr/jest-serializer-cdk-asset',
+    '@gammarer/jest-serializer-aws-cdk-asset-filename-replacer@~0.4',
   ],
   jestOptions: {
     jestConfig: {
-      snapshotSerializers: ['<rootDir>/node_modules/@yicr/jest-serializer-cdk-asset'],
+      snapshotSerializers: ['<rootDir>/node_modules/@gammarer/jest-serializer-aws-cdk-asset-filename-replacer'],
     },
   },
   npmAccess: javascript.NpmAccess.PUBLIC,
@@ -25,7 +25,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   depsUpgradeOptions: {
     workflowOptions: {
       labels: ['auto-approve', 'auto-merge'],
-      schedule: javascript.UpgradeDependenciesSchedule.expressions(['0 18 * * *']),
+      schedule: javascript.UpgradeDependenciesSchedule.expressions(['0 18 * * 6']),
     },
   },
   autoApproveOptions: {

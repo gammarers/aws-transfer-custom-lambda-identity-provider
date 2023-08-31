@@ -1,6 +1,11 @@
 {
   "dependencies": [
     {
+      "name": "@gammarer/jest-serializer-aws-cdk-asset-filename-replacer",
+      "version": "~0.4",
+      "type": "build"
+    },
+    {
       "name": "@types/jest",
       "version": "^27",
       "type": "build"
@@ -18,10 +23,6 @@
     {
       "name": "@typescript-eslint/parser",
       "version": "^5",
-      "type": "build"
-    },
-    {
-      "name": "@yicr/jest-serializer-cdk-asset",
       "type": "build"
     },
     {
