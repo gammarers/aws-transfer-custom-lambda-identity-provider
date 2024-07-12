@@ -3,7 +3,7 @@ import { awscdk, javascript } from 'projen';
 const project = new awscdk.AwsCdkConstructLibrary({
   author: 'yicr',
   authorAddress: 'yicr@users.noreply.github.com',
-  cdkVersion: '2.61.0',
+  cdkVersion: '2.80.0',
   projenrcTs: true,
   defaultReleaseBranch: 'main',
   name: '@yicr/transfer-custom-lambda-identity-provider',
