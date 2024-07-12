@@ -3,9 +3,11 @@ import { awscdk, javascript } from 'projen';
 const project = new awscdk.AwsCdkConstructLibrary({
   author: 'yicr',
   authorAddress: 'yicr@users.noreply.github.com',
-  cdkVersion: '2.80.0',
-  projenrcTs: true,
   defaultReleaseBranch: 'main',
+  cdkVersion: '2.80.0',
+  typescriptVersion: '5.4.x',
+  jsiiVersion: '5.4.x',
+  projenrcTs: true,
   name: '@yicr/transfer-custom-lambda-identity-provider',
   description: 'This is a Simple Transfer AWS CDK Construct',
   repositoryUrl: 'https://github.com/yicr/transfer-custom-lambda-identity-provider.git',
