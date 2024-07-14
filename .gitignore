@@ -50,4 +50,6 @@ junit.xml
 .jsii
 tsconfig.json
 !/API.md
+/assets/
+!/src/funcs/sftp-user-authentication-function.ts
 !/.projenrc.ts
