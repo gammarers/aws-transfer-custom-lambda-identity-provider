@@ -14,11 +14,15 @@ const project = new awscdk.AwsCdkConstructLibrary({
   keywords: ['aws', 'cdk', 'aws-cdk', 'transfer', 'sftp'],
   deps: [],
   devDeps: [
-    '@gammarer/jest-serializer-aws-cdk-asset-filename-replacer@~0.4',
+    'aws-sdk-client-mock@^3',
+    'aws-sdk-client-mock-jest@^3',
+    '@aws-sdk/client-secrets-manager@^3',
+    '@types/aws-lambda@^8',
+    '@gammarers/jest-aws-cdk-asset-filename-renamer@~0.5.4',
   ],
   jestOptions: {
     jestConfig: {
-      snapshotSerializers: ['<rootDir>/node_modules/@gammarer/jest-serializer-aws-cdk-asset-filename-replacer'],
+      snapshotSerializers: ['<rootDir>/node_modules/@gammarers/jest-aws-cdk-asset-filename-renamer'],
     },
   },
   npmAccess: javascript.NpmAccess.PUBLIC,

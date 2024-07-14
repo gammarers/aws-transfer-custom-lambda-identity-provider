@@ -38,12 +38,16 @@
     "organization": false
   },
   "devDependencies": {
-    "@gammarer/jest-serializer-aws-cdk-asset-filename-replacer": "~0.4",
+    "@aws-sdk/client-secrets-manager": "^3",
+    "@gammarers/jest-aws-cdk-asset-filename-renamer": "~0.5.4",
+    "@types/aws-lambda": "^8",
     "@types/jest": "^29.5.12",
     "@types/node": "^16",
     "@typescript-eslint/eslint-plugin": "^7",
     "@typescript-eslint/parser": "^7",
     "aws-cdk-lib": "2.80.0",
+    "aws-sdk-client-mock": "^3",
+    "aws-sdk-client-mock-jest": "^3",
     "constructs": "10.0.5",
     "esbuild": "^0.23.0",
     "eslint": "^8",
@@ -85,7 +89,7 @@
   "jest": {
     "coverageProvider": "v8",
     "snapshotSerializers": [
-      "<rootDir>/node_modules/@gammarer/jest-serializer-aws-cdk-asset-filename-replacer"
+      "<rootDir>/node_modules/@gammarers/jest-aws-cdk-asset-filename-renamer"
     ],
     "testMatch": [
       "<rootDir>/@(src|test)/**/?(*.)+(spec|test).ts?(x)",
