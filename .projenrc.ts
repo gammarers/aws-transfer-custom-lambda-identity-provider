@@ -12,7 +12,9 @@ const project = new awscdk.AwsCdkConstructLibrary({
   description: 'This is a Simple Transfer AWS CDK Construct',
   repositoryUrl: 'https://github.com/yicr/transfer-custom-lambda-identity-provider.git',
   keywords: ['aws', 'cdk', 'aws-cdk', 'transfer', 'sftp'],
-  deps: [],
+  deps: [
+    'ip-cidr@^4',
+  ],
   devDeps: [
     'aws-sdk-client-mock@^3',
     'aws-sdk-client-mock-jest@^3',
@@ -37,6 +39,15 @@ const project = new awscdk.AwsCdkConstructLibrary({
   autoApproveOptions: {
     secret: 'GITHUB_TOKEN',
     allowedUsernames: ['yicr'],
+  },
+  lambdaOptions: {
+    // target node.js runtime
+    runtime: awscdk.LambdaRuntime.NODEJS_20_X,
+    bundlingOptions: {
+      // list of node modules to exclude from the bundle
+      externals: ['@aws-sdk/client-cloudwatch-logs'],
+      sourcemap: true,
+    },
   },
 });
 project.synth();

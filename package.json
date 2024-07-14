@@ -70,6 +70,9 @@
     "aws-cdk-lib": "^2.80.0",
     "constructs": "^10.0.5"
   },
+  "dependencies": {
+    "ip-cidr": "^4"
+  },
   "keywords": [
     "aws",
     "aws-cdk",
