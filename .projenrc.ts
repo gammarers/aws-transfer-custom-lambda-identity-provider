@@ -12,6 +12,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   description: 'This is a Simple Transfer AWS CDK Construct',
   repositoryUrl: 'https://github.com/gammarers/aws-transfer-custom-lambda-identity-provider-function.git',
   keywords: ['aws', 'cdk', 'aws-cdk', 'transfer', 'sftp'],
+  majorVersion: 1,
   deps: [
   ],
   devDeps: [
