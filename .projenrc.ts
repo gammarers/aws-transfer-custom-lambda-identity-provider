@@ -3,25 +3,38 @@ import { awscdk, javascript } from 'projen';
 const project = new awscdk.AwsCdkConstructLibrary({
   author: 'yicr',
   authorAddress: 'yicr@users.noreply.github.com',
-  cdkVersion: '2.61.0',
-  projenrcTs: true,
   defaultReleaseBranch: 'main',
-  name: '@yicr/transfer-custom-lambda-identity-provider',
+  cdkVersion: '2.80.0',
+  typescriptVersion: '5.4.x',
+  jsiiVersion: '5.4.x',
+  projenrcTs: true,
+  name: '@gammarers/aws-transfer-custom-lambda-identity-provider-function',
   description: 'This is a Simple Transfer AWS CDK Construct',
-  repositoryUrl: 'https://github.com/yicr/transfer-custom-lambda-identity-provider.git',
+  repositoryUrl: 'https://github.com/gammarers/aws-transfer-custom-lambda-identity-provider-function.git',
   keywords: ['aws', 'cdk', 'aws-cdk', 'transfer', 'sftp'],
-  deps: [],
+  majorVersion: 1,
+  deps: [
+  ],
   devDeps: [
-    '@gammarer/jest-serializer-aws-cdk-asset-filename-replacer@~0.4',
+    'aws-sdk-client-mock@^3',
+    'aws-sdk-client-mock-jest@^3',
+    '@aws-sdk/client-secrets-manager@^3',
+    '@types/aws-lambda@^8',
+    '@gammarers/jest-aws-cdk-asset-filename-renamer@~0.5.4',
   ],
   jestOptions: {
     jestConfig: {
-      snapshotSerializers: ['<rootDir>/node_modules/@gammarer/jest-serializer-aws-cdk-asset-filename-replacer'],
+      snapshotSerializers: ['<rootDir>/node_modules/@gammarers/jest-aws-cdk-asset-filename-renamer'],
+    },
+  },
+  tsconfigDev: {
+    compilerOptions: {
+      strict: true,
     },
   },
   npmAccess: javascript.NpmAccess.PUBLIC,
   minNodeVersion: '16.0.0',
-  workflowNodeVersion: '18.17.1',
+  workflowNodeVersion: '22.x',
   depsUpgradeOptions: {
     workflowOptions: {
       labels: ['auto-approve', 'auto-merge'],
@@ -32,5 +45,16 @@ const project = new awscdk.AwsCdkConstructLibrary({
     secret: 'GITHUB_TOKEN',
     allowedUsernames: ['yicr'],
   },
+  lambdaOptions: {
+    // target node.js runtime
+    runtime: awscdk.LambdaRuntime.NODEJS_20_X,
+    bundlingOptions: {
+      // list of node modules to exclude from the bundle
+      externals: ['@aws-sdk/client-secrets-manager'],
+      sourcemap: true,
+    },
+  },
 });
+
+
 project.synth();

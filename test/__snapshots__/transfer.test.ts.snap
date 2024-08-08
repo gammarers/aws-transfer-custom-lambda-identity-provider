@@ -1,71 +1,36 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`TransferCustomLambdaIdentityProvider Testing Should match snapshot 1`] = `
-Object {
-  "Parameters": Object {
-    "BootstrapVersion": Object {
+{
+  "Parameters": {
+    "BootstrapVersion": {
       "Default": "/cdk-bootstrap/hnb659fds/version",
       "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },
-  "Resources": Object {
-    "TransferCustomLambdaIdentityProviderFunction6EA67D56": Object {
-      "DependsOn": Array [
-        "TransferCustomLambdaIdentityProviderLambdaExecutionRole6A614CFE",
-      ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": "cdk-hnb659fds-assets-123456789012-us-east-1",
-          "S3Key": "HASH.zip",
-        },
-        "Description": "A function to lookup and return user data from AWS Secrets Manager.",
-        "FunctionName": "sftp-user-authentication-func-6c4f6c0f",
-        "Handler": "index.lambda_handler",
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "TransferCustomLambdaIdentityProviderLambdaExecutionRole6A614CFE",
-            "Arn",
-          ],
-        },
-        "Runtime": "python3.8",
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "TransferCustomLambdaIdentityProviderFunctionLambdaAccessPermission6B14587C": Object {
-      "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
-            "TransferCustomLambdaIdentityProviderFunction6EA67D56",
-            "Arn",
-          ],
-        },
-        "Principal": "transfer.amazonaws.com",
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "TransferCustomLambdaIdentityProviderLambdaExecutionRole6A614CFE": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+  "Resources": {
+    "TransferCustomLambdaIdentityProviderFunctionRoleD3B2E903": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -73,11 +38,11 @@ Object {
             ],
           },
         ],
-        "Policies": Array [
-          Object {
-            "PolicyDocument": Object {
-              "Statement": Array [
-                Object {
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
                   "Action": "secretsmanager:GetSecretValue",
                   "Effect": "Allow",
                   "Resource": "arn:aws:secretsmanager:us-east-1:123456789012:secret:transfer/s-*",
@@ -88,94 +53,65 @@ Object {
             "PolicyName": "get-secret-policy",
           },
         ],
-        "RoleName": "lambda-exec-role-6c4f6c0f",
       },
       "Type": "AWS::IAM::Role",
     },
-    "TransferCustomLambdaIdentityProviderLoggingRole6CBDB475": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "transfer.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
+    "TransferCustomLambdaIdentityProviderTransferUserAuthenticationFunction4AE90DCF": {
+      "DependsOn": [
+        "TransferCustomLambdaIdentityProviderFunctionRoleD3B2E903",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": "cdk-hnb659fds-assets-123456789012-us-east-1",
+          "S3Key": "HASH.zip",
         },
-        "Description": "transfer logging role.",
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSTransferLoggingAccess",
-              ],
-            ],
-          },
-        ],
-        "RoleName": "transfer-logging-role-6c4f6c0f",
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "TransferCustomLambdaIdentityProviderTransferServer5ABD8CD4": Object {
-      "Properties": Object {
-        "EndpointType": "PUBLIC",
-        "IdentityProviderDetails": Object {
-          "Function": Object {
-            "Fn::GetAtt": Array [
-              "TransferCustomLambdaIdentityProviderFunction6EA67D56",
-              "Arn",
-            ],
+        "Description": "A function to lookup and return user data from AWS Secrets Manager.",
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
           },
         },
-        "IdentityProviderType": "AWS_LAMBDA",
-        "LoggingRole": Object {
-          "Fn::GetAtt": Array [
-            "TransferCustomLambdaIdentityProviderLoggingRole6CBDB475",
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "TransferCustomLambdaIdentityProviderFunctionRoleD3B2E903",
             "Arn",
           ],
         },
-        "Protocols": Array [
-          "SFTP",
-        ],
-        "Tags": Array [
-          Object {
-            "Key": "aws:transfer:customHostname",
-            "Value": "sftp.example.com",
-          },
-          Object {
-            "Key": "aws:transfer:route53HostedZoneId",
-            "Value": "Z0000000000000000000Q",
-          },
-        ],
+        "Runtime": "nodejs20.x",
       },
-      "Type": "AWS::Transfer::Server",
+      "Type": "AWS::Lambda::Function",
+    },
+    "TransferCustomLambdaIdentityProviderTransferUserAuthenticationFunctionLambdaAccessPermission3D2FCB59": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "TransferCustomLambdaIdentityProviderTransferUserAuthenticationFunction4AE90DCF",
+            "Arn",
+          ],
+        },
+        "Principal": "transfer.amazonaws.com",
+      },
+      "Type": "AWS::Lambda::Permission",
     },
   },
-  "Rules": Object {
-    "CheckBootstrapVersion": Object {
-      "Assertions": Array [
-        Object {
-          "Assert": Object {
-            "Fn::Not": Array [
-              Object {
-                "Fn::Contains": Array [
-                  Array [
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
                     "1",
                     "2",
                     "3",
                     "4",
                     "5",
                   ],
-                  Object {
+                  {
                     "Ref": "BootstrapVersion",
                   },
                 ],

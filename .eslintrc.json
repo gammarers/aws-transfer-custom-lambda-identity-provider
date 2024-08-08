@@ -148,6 +148,7 @@
         "devDependencies": [
           "**/test/**",
           "**/build-tools/**",
+          "src/funcs/transfer-user-authentication.lambda.ts",
           ".projenrc.ts",
           "projenrc/**/*.ts"
         ],
@@ -171,7 +172,7 @@
         }
       }
     ],
-    "no-duplicate-imports": [
+    "import/no-duplicates": [
       "error"
     ],
     "no-shadow": [
