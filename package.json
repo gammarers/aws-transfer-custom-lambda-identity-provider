@@ -9,8 +9,8 @@
     "build": "npx projen build",
     "bump": "npx projen bump",
     "bundle": "npx projen bundle",
-    "bundle:funcs/sftp-user-authentication.lambda": "npx projen bundle:funcs/sftp-user-authentication.lambda",
-    "bundle:funcs/sftp-user-authentication.lambda:watch": "npx projen bundle:funcs/sftp-user-authentication.lambda:watch",
+    "bundle:funcs/transfer-user-authentication.lambda": "npx projen bundle:funcs/transfer-user-authentication.lambda",
+    "bundle:funcs/transfer-user-authentication.lambda:watch": "npx projen bundle:funcs/transfer-user-authentication.lambda:watch",
     "clobber": "npx projen clobber",
     "compat": "npx projen compat",
     "compile": "npx projen compile",
@@ -69,9 +69,6 @@
   "peerDependencies": {
     "aws-cdk-lib": "^2.80.0",
     "constructs": "^10.0.5"
-  },
-  "dependencies": {
-    "ip-cidr": "^4"
   },
   "keywords": [
     "aws",

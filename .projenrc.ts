@@ -13,7 +13,6 @@ const project = new awscdk.AwsCdkConstructLibrary({
   repositoryUrl: 'https://github.com/gammarers/aws-transfer-custom-lambda-identity-provider-function.git',
   keywords: ['aws', 'cdk', 'aws-cdk', 'transfer', 'sftp'],
   deps: [
-    'ip-cidr@^4',
   ],
   devDeps: [
     'aws-sdk-client-mock@^3',
@@ -27,9 +26,14 @@ const project = new awscdk.AwsCdkConstructLibrary({
       snapshotSerializers: ['<rootDir>/node_modules/@gammarers/jest-aws-cdk-asset-filename-renamer'],
     },
   },
+  tsconfigDev: {
+    compilerOptions: {
+      strict: true,
+    },
+  },
   npmAccess: javascript.NpmAccess.PUBLIC,
   minNodeVersion: '16.0.0',
-  workflowNodeVersion: '18.17.1',
+  workflowNodeVersion: '22.x',
   depsUpgradeOptions: {
     workflowOptions: {
       labels: ['auto-approve', 'auto-merge'],
@@ -45,9 +49,11 @@ const project = new awscdk.AwsCdkConstructLibrary({
     runtime: awscdk.LambdaRuntime.NODEJS_20_X,
     bundlingOptions: {
       // list of node modules to exclude from the bundle
-      externals: ['@aws-sdk/client-cloudwatch-logs'],
+      externals: ['@aws-sdk/client-secrets-manager'],
       sourcemap: true,
     },
   },
 });
+
+
 project.synth();

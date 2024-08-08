@@ -148,7 +148,7 @@
         "devDependencies": [
           "**/test/**",
           "**/build-tools/**",
-          "src/funcs/sftp-user-authentication.lambda.ts",
+          "src/funcs/transfer-user-authentication.lambda.ts",
           ".projenrc.ts",
           "projenrc/**/*.ts"
         ],
