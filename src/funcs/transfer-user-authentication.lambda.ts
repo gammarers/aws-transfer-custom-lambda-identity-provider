@@ -33,14 +33,20 @@ export const handler = async (event: TransferFamilyAuthorizerEvent): Promise<Tra
       return {};
     }
     console.log('Using SSH authentication');
-    authenticationType = 'SSH';
+    authenticationType = 'SSHPubKey';
   }
 
   const secret = await getSecret(`transfer-user/${inputServerId}/${inputUsername}`);
 
   if (secret) {
     const secretDict = JSON.parse(secret) as SecretDict;
-    const userAuthenticated = authenticateUser(authenticationType, secretDict, inputPassword, inputProtocol);
+    const userAuthenticated = (() => {
+      if (authenticationType === 'SSHPubKey') {
+        console.log('Skip password check as SSH login request');
+        return true;
+      }
+      return authenticatePasswordUser(secretDict, inputPassword, inputProtocol);
+    })();
     const ipMatch = checkIpAddress(secretDict, inputSourceIp, inputProtocol);
 
     if (userAuthenticated && ipMatch) {
@@ -87,23 +93,18 @@ const checkIpAddress = (secretDict: SecretDict, inputSourceIp: string, inputProt
   return false;
 };
 
-const authenticateUser = (authType: string, secretDict: SecretDict, inputPassword: string, inputProtocol: string): boolean => {
-  if (authType === 'SSH') {
-    console.log('Skip password check as SSH login request');
+const authenticatePasswordUser = (secretDict: SecretDict, inputPassword: string, inputProtocol: string): boolean => {
+  const password = lookup(secretDict, 'Password', inputProtocol);
+  if (!password) {
+    console.log('Unable to authenticate user - No field match in Secret for password');
+    return false;
+  }
+
+  if (inputPassword === password) {
     return true;
   } else {
-    const password = lookup(secretDict, 'Password', inputProtocol);
-    if (!password) {
-      console.log('Unable to authenticate user - No field match in Secret for password');
-      return false;
-    }
-
-    if (inputPassword === password) {
-      return true;
-    } else {
-      console.log('Unable to authenticate user - Incoming password does not match stored');
-      return false;
-    }
+    console.log('Unable to authenticate user - Incoming password does not match stored');
+    return false;
   }
 };
 
@@ -137,7 +138,7 @@ const buildResponse = (secretDict: SecretDict, authType: string, inputProtocol: 
     responseData.HomeDirectory = homeDirectory;
   }
 
-  if (authType === 'SSH') {
+  if (authType === 'SSHPubKey') {
     const publicKey = lookup(secretDict, 'PublicKey', inputProtocol);
     if (publicKey) {
       responseData.PublicKeys = [publicKey];
