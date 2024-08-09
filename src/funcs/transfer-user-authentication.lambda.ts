@@ -72,22 +72,18 @@ const lookup = (secretDict: SecretDict, key: string, inputProtocol: string): str
 };
 
 const checkIpAddress = (secretDict: SecretDict, inputSourceIp: string, inputProtocol: string): boolean => {
-  const acceptedIpNetworkList = lookup(secretDict, 'AcceptedIpNetworkList', inputProtocol);
-  if (!acceptedIpNetworkList) {
-    console.log('No IP range provided - Skip IP check');
-    return true;
+  const acceptedIpNetworks = lookup(secretDict, 'AcceptedIpNetworks', inputProtocol);
+  if (!acceptedIpNetworks) {
+    console.log('Unable to authenticate user - No filed match in Secret for AcceptedIpNetworks(CIDR format, comma-separated)');
+    return false;
   }
 
-  for (const acceptedIpNetwork of acceptedIpNetworkList.split(',')) {
-    if (isIpInCidr(inputSourceIp, acceptedIpNetwork)) {
+  for (const cidr of acceptedIpNetworks.split(',')) {
+    if (isIpInCidr(inputSourceIp, cidr)) {
       console.log('Source IP address match');
       return true;
     }
   }
-  //  if (new CIDRMatcher(acceptedIpNetworkList.split(',')).contains(inputSourceIp)) {
-  //    console.log('Source IP address match');
-  //    return true;
-  //  }
 
   console.log('Source IP address not in range');
   return false;
