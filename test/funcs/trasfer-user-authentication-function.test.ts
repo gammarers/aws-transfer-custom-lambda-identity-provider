@@ -230,7 +230,7 @@ describe('Transfer Family Authorizer Lambda', () => {
     expect(result).toEqual({});
   });
 
-  it('should handle IP address checks fail', async () => {
+  it('should fail IP address range', async () => {
     const event: TransferFamilyAuthorizerEvent = {
       serverId: 'server-id',
       username: 'test-user',
@@ -257,18 +257,39 @@ describe('Transfer Family Authorizer Lambda', () => {
         }),
       });
 
-    // Test different IP address scenarios
-    //(ip.isEqual as jest.Mock).mockReturnValue(false);
+    const result: TransferFamilyAuthorizerResult = await handler(event);
+
+    expect(result).toEqual({});
+  });
+
+  it('should fail IP address not stored', async () => {
+    const event: TransferFamilyAuthorizerEvent = {
+      serverId: 'server-id',
+      username: 'test-user',
+      protocol: 'SFTP',
+      sourceIp: '192.168.1.1',
+      password: 'password',
+    };
+
+    const secretId = `transfer-user/${event.serverId}/${event.username}`;
+
+    // Mock response from AWS Secrets Manager
+    secretsManagerMockClient
+      .on(GetSecretValueCommand, {
+        SecretId: secretId,
+        VersionStage: 'AWSCURRENT',
+      })
+      .resolves({
+        SecretString: JSON.stringify({
+          Password: 'password',
+          Role: 'example-sftp-user-role',
+          PublicKey: '',
+          HomeDirectory: '/example-bucket/example-home/',
+        }),
+      });
 
     const result: TransferFamilyAuthorizerResult = await handler(event);
 
     expect(result).toEqual({});
-
-    // Test IP match scenario
-    //(ip.isEqual as jest.Mock).mockReturnValue(true);
-
-    const resultWithIPMatch: TransferFamilyAuthorizerResult = await handler(event);
-
-    expect(resultWithIPMatch).toEqual({});
   });
 });
