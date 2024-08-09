@@ -103,6 +103,37 @@ describe('Transfer Family Authorizer Lambda', () => {
     });
   });
 
+  it('should fail SFTP user ssh public key authentication(not stored public key)', async () => {
+    const event: TransferFamilyAuthorizerEvent = {
+      serverId: 'server-id',
+      username: 'test-pubkey-user',
+      protocol: 'SFTP',
+      sourceIp: '192.168.1.1',
+      password: '',
+    };
+
+    const secretId = `transfer-user/${event.serverId}/${event.username}`;
+    const secretValue = {
+      Password: 'password',
+      Role: 'example-sftp-pub-key-user-role',
+      AcceptedIpNetworkList: '192.168.1.1/32',
+      HomeDirectory: '/example-bucket/example-home/',
+    };
+
+    // Mock successful response from AWS Secrets Manager
+    secretsManagerMockClient
+      .on(GetSecretValueCommand, {
+        SecretId: secretId,
+      })
+      .resolves({
+        SecretString: JSON.stringify(secretValue),
+      });
+
+    const result: TransferFamilyAuthorizerResult = await handler(event);
+
+    expect(result).toEqual({});
+  });
+
   it('should handle FTP/S user successful authentication', async () => {
     const event: TransferFamilyAuthorizerEvent = {
       serverId: 'server-id',
