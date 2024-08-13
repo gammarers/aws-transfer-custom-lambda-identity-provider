@@ -465,6 +465,39 @@ describe('Transfer Family Authorizer Lambda', () => {
     expect(result).toEqual({});
   });
 
+  it('should success IP V6 address range', async () => {
+    const event: TransferFamilyAuthorizerEvent = {
+      serverId: 'server-id',
+      username: 'test-user',
+      protocol: 'SFTP',
+      sourceIp: '2001:db8::1',
+      password: 'password',
+    };
+
+    const secretId = `transfer-user/${event.serverId}/${event.username}`;
+
+    // Mock response from AWS Secrets Manager
+    secretsManagerMockClient
+      .on(GetSecretValueCommand, {
+        SecretId: secretId,
+      })
+      .resolves({
+        SecretString: JSON.stringify({
+          Password: 'password',
+          Role: 'example-sftp-user-role',
+          AcceptedIpNetworks: '2001:db8::/64',
+          HomeDirectory: '/example-bucket/example-home/',
+        }),
+      });
+
+    const result: TransferFamilyAuthorizerResult = await handler(event);
+
+    expect(result).toEqual({
+      Role: 'example-sftp-user-role',
+      HomeDirectory: '/example-bucket/example-home/',
+    });
+  });
+
   it('should fail IP address not stored', async () => {
     const event: TransferFamilyAuthorizerEvent = {
       serverId: 'server-id',
