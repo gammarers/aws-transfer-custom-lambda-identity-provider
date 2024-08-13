@@ -32,7 +32,7 @@ describe('Transfer Family Authorizer Lambda', () => {
     expect(result).toMatchObject({});
   });
 
-  it('should handle SFTP user successful password authentication', async () => {
+  it('should handle SFTP user successful password authentication (return role)', async () => {
     const event: TransferFamilyAuthorizerEvent = {
       serverId: 'server-id',
       username: 'test-user',
@@ -45,7 +45,6 @@ describe('Transfer Family Authorizer Lambda', () => {
     const secretValue = {
       Password: 'password',
       Role: 'example-sftp-user-role',
-      PublicKey: '',
       AcceptedIpNetworks: '192.168.1.1/32',
       HomeDirectory: '/example-bucket/example-home/',
     };
@@ -63,6 +62,41 @@ describe('Transfer Family Authorizer Lambda', () => {
 
     expect(result).toEqual({
       Role: secretValue.Role,
+      HomeDirectory: secretValue.HomeDirectory,
+    });
+  });
+
+  it('should handle SFTP user successful password authentication (return with policy)', async () => {
+    const event: TransferFamilyAuthorizerEvent = {
+      serverId: 'server-id',
+      username: 'test-user',
+      protocol: 'SFTP',
+      sourceIp: '192.168.1.1',
+      password: 'password',
+    };
+
+    const secretId = `transfer-user/${event.serverId}/${event.username}`;
+    const secretValue = {
+      Password: 'password',
+      Policy: 'example-sftp-user-role',
+      AcceptedIpNetworks: '192.168.1.1/32',
+      HomeDirectory: '/example-bucket/example-home/',
+    };
+
+    // Mock successful response from AWS Secrets Manager
+    secretsManagerMockClient
+      .on(GetSecretValueCommand, {
+        SecretId: secretId,
+      })
+      .resolves({
+        SecretString: JSON.stringify(secretValue),
+      });
+
+    const result: TransferFamilyAuthorizerResult = await handler(event);
+
+    expect(result).toEqual({
+      Policy: secretValue.Policy,
+      Role: '',
       HomeDirectory: secretValue.HomeDirectory,
     });
   });
