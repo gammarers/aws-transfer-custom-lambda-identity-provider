@@ -101,6 +101,42 @@ describe('Transfer Family Authorizer Lambda', () => {
     });
   });
 
+  it('should handle SFTP user successful password authentication (logical home directory)', async () => {
+    const event: TransferFamilyAuthorizerEvent = {
+      serverId: 'server-id',
+      username: 'test-user',
+      protocol: 'SFTP',
+      sourceIp: '192.168.1.1',
+      password: 'password',
+    };
+
+    const secretId = `transfer-user/${event.serverId}/${event.username}`;
+    const secretValue = {
+      Password: 'password',
+      Policy: 'example-sftp-user-role',
+      AcceptedIpNetworks: '192.168.1.1/32',
+      HomeDirectoryDetails: JSON.stringify({ Entry: '/', Target: '${BucketName}/something/' }),
+    };
+
+    // Mock successful response from AWS Secrets Manager
+    secretsManagerMockClient
+      .on(GetSecretValueCommand, {
+        SecretId: secretId,
+      })
+      .resolves({
+        SecretString: JSON.stringify(secretValue),
+      });
+
+    const result: TransferFamilyAuthorizerResult = await handler(event);
+
+    expect(result).toEqual({
+      Policy: secretValue.Policy,
+      Role: '',
+      HomeDirectoryType: 'LOGICAL',
+      HomeDirectoryDetails: secretValue.HomeDirectoryDetails,
+    });
+  });
+
   it('should handle SFTP user successful ssh public key authentication', async () => {
     const event: TransferFamilyAuthorizerEvent = {
       serverId: 'server-id',
