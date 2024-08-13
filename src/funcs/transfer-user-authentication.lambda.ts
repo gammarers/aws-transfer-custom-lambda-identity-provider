@@ -154,52 +154,33 @@ const getSecret = async (id: string): Promise<string | null> => {
   const client = new SecretsManagerClient({
     region: 'ap-northeast-1',
   });
-  const command = new GetSecretValueCommand({ SecretId: id });
 
-  try {
-    const data: GetSecretValueCommandOutput = await client.send(command);
-    if (data.SecretString) {
-      return data.SecretString;
-    }
-    if (data.SecretBinary) {
-      return new TextDecoder().decode(data.SecretBinary);
-    }
-    return null;
-  } catch (error) {
-    console.log('Not found Secret');
-    console.log(`Error: ${JSON.stringify(error)}`);
-    return null;
-  }
-  //const resp = await client.send(command);
-//  return client.send(command)
-//    .then((data: GetSecretValueCommandOutput) => {
-//      if (data?.SecretString) {
-//        return data.SecretString;
-//      }
-//      if (data?.SecretBinary) {
-//        return new TextDecoder().decode(data.SecretBinary);
-//      }
-//      return null;
-//    })
-//    .catch((error: Error) => {
-//      console.log('Not found Secret');
-//      console.log(`Error:${JSON.stringify(error)}`);
-//      return null;
-//    });
-//  console.log(resp);
-//  if (resp.SecretString) {
-//    console.log('Found Secret String');
-//    return resp.SecretString;
-//  } else {
-//    if (resp.SecretBinary) {
-//      console.log('Found Binary Secret');
-//      //return Buffer.from(resp.SecretBinary as string, 'base64').toString('ascii');
-//      return new TextDecoder().decode(resp.SecretBinary);
-//    }
-//  }
-//
-//  console.log('Not found Secret');
-//  return null;
+  //  try {
+  //    const data: GetSecretValueCommandOutput = await client.send(command);
+  //    if (data.SecretString) {
+  //      return data.SecretString;
+  //    }
+  //    if (data.SecretBinary) {
+  //      return Buffer.from(data.SecretBinary).toString('utf-8');
+  //    }
+  //    return null;
+  //  } catch (error) {
+  //    console.log('Not found Secret');
+  //    console.log(`Error: ${JSON.stringify(error)}`);
+  //    return null;
+  //  }
+  return client.send(new GetSecretValueCommand({ SecretId: id }))
+    .then((data: GetSecretValueCommandOutput) => {
+      if (data?.SecretBinary) {
+        return Buffer.from(data.SecretBinary).toString('utf-8');
+      }
+      return data?.SecretString ? data.SecretString: null;
+    })
+    .catch((error: Error) => {
+      console.log('Not found Secret');
+      console.log(`Error:${JSON.stringify(error)}`);
+      return null;
+    });
 };
 
 const ipToBigInt = (address: string) => {
