@@ -78,7 +78,6 @@ describe('Transfer Family Authorizer Lambda', () => {
 
     const secretId = `transfer-user/${event.serverId}/${event.username}`;
     const secretValue = {
-      Password: 'password',
       Role: 'example-sftp-pub-key-user-role',
       PublicKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAtl5t6sPp5v2iO8TXZ3fPRhQsUOPlR5P7EshyRz5aGv2OUdbWjG1rU5NkBr5YZ5X73vQiUk4PS5ukUb4yF1VRliI3zRMnEBHkQ2PEhT1B7KzSO2m0H9KyYIF9Kg7UGyPU9Km/6ti+uYmCZ9Z+J7Op+bl4WSO/JZ47aE6ZPtN2t1D5x+JZQ8Wz2YF8bhhDZ2rJ0XbSZZIIRn3dBSfx5Q1BxlUN5RjLh9X2Izq9SP1r2vTuIhF/mf1McOthd4kMAvs9qqNmL9XknO9u8xSpG2yXSUzUblpI9bZWAG7QFhy8N6DJrKU3Z8MIvFQ8UlEYZm2N1vVHgSESHuO7A3mK45djkffIvE8F8w== test@localhost',
       AcceptedIpNetworks: '192.168.1.1/32',
@@ -100,6 +99,41 @@ describe('Transfer Family Authorizer Lambda', () => {
       Role: secretValue.Role,
       HomeDirectory: secretValue.HomeDirectory,
       PublicKeys: [secretValue.PublicKey],
+    });
+  });
+
+  it('should handle SFTP user successful ssh public key authentication (define by protocol)', async () => {
+    const event: TransferFamilyAuthorizerEvent = {
+      serverId: 'server-id',
+      username: 'test-pubkey-user',
+      protocol: 'SFTP',
+      sourceIp: '192.168.1.1',
+      password: '',
+    };
+
+    const secretId = `transfer-user/${event.serverId}/${event.username}`;
+    const secretValue = {
+      Role: 'example-sftp-pub-key-user-role',
+      SFTPPublicKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAtl5t6sPp5v2iO8TXZ3fPRhQsUOPlR5P7EshyRz5aGv2OUdbWjG1rU5NkBr5YZ5X73vQiUk4PS5ukUb4yF1VRliI3zRMnEBHkQ2PEhT1B7KzSO2m0H9KyYIF9Kg7UGyPU9Km/6ti+uYmCZ9Z+J7Op+bl4WSO/JZ47aE6ZPtN2t1D5x+JZQ8Wz2YF8bhhDZ2rJ0XbSZZIIRn3dBSfx5Q1BxlUN5RjLh9X2Izq9SP1r2vTuIhF/mf1McOthd4kMAvs9qqNmL9XknO9u8xSpG2yXSUzUblpI9bZWAG7QFhy8N6DJrKU3Z8MIvFQ8UlEYZm2N1vVHgSESHuO7A3mK45djkffIvE8F8w== test@localhost',
+      AcceptedIpNetworks: '192.168.1.1/32',
+      HomeDirectory: '/example-bucket/example-home/',
+    };
+
+    // Mock successful response from AWS Secrets Manager
+    secretsManagerMockClient
+      .on(GetSecretValueCommand, {
+        SecretId: secretId,
+      })
+      .resolves({
+        SecretString: JSON.stringify(secretValue),
+      });
+
+    const result: TransferFamilyAuthorizerResult = await handler(event);
+
+    expect(result).toEqual({
+      Role: secretValue.Role,
+      HomeDirectory: secretValue.HomeDirectory,
+      PublicKeys: [secretValue.SFTPPublicKey],
     });
   });
 
