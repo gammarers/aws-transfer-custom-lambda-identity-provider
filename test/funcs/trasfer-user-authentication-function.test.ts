@@ -245,7 +245,6 @@ describe('Transfer Family Authorizer Lambda', () => {
     secretsManagerMockClient
       .on(GetSecretValueCommand, {
         SecretId: secretId,
-        VersionStage: 'AWSCURRENT',
       })
       .resolves({
         SecretString: JSON.stringify({
@@ -277,7 +276,6 @@ describe('Transfer Family Authorizer Lambda', () => {
     secretsManagerMockClient
       .on(GetSecretValueCommand, {
         SecretId: secretId,
-        VersionStage: 'AWSCURRENT',
       })
       .resolves({
         SecretString: JSON.stringify({
@@ -292,4 +290,51 @@ describe('Transfer Family Authorizer Lambda', () => {
 
     expect(result).toEqual({});
   });
+
+  it('should handle secret manager resource empty', async () => {
+
+    const event: TransferFamilyAuthorizerEvent = {
+      serverId: 'server-id',
+      username: 'test-user',
+      protocol: 'SFTP',
+      sourceIp: '192.168.1.1',
+      password: 'password',
+    };
+
+    secretsManagerMockClient
+      .on(GetSecretValueCommand, {
+        SecretId: 'empty-secret',
+      })
+      .resolves({
+        SecretString: JSON.stringify({}),
+      });
+
+    const result: TransferFamilyAuthorizerResult = await handler(event);
+
+    expect(result).toEqual({});
+  });
+
+  //  it('should handle secret manager resource not found', async () => {
+  //
+  //    const event: TransferFamilyAuthorizerEvent = {
+  //      serverId: 'server-id',
+  //      username: 'test-user',
+  //      protocol: 'SFTP',
+  //      sourceIp: '192.168.1.1',
+  //      password: 'password',
+  //    };
+  //
+  //    secretsManagerMockClient
+  //      .on(GetSecretValueCommand, {
+  //        SecretId: 'not-found-secret',
+  //      })
+  //      .rejects(new ResourceNotFoundException({
+  //        message: "Secrets Manager can't find the specified secret.",
+  //        name: 'ResourceNotFoundException',
+  //      }));
+  //
+  //    const result: TransferFamilyAuthorizerResult = await handler(event);
+  //
+  //    expect(result).toEqual({});
+  //  });
 });

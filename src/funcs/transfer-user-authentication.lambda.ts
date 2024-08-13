@@ -73,6 +73,7 @@ const lookup = (secretDict: SecretDict, key: string, inputProtocol: string): str
 
 const checkIpAddress = (secretDict: SecretDict, inputSourceIp: string, inputProtocol: string): boolean => {
   const acceptedIpNetworks = lookup(secretDict, 'AcceptedIpNetworks', inputProtocol);
+  console.log(`AcceptedIpNetworks: ${acceptedIpNetworks}`);
   if (!acceptedIpNetworks) {
     console.log('Unable to authenticate user - No filed match in Secret for AcceptedIpNetworks(CIDR format, comma-separated)');
     return false;
@@ -157,7 +158,6 @@ const getSecret = async (id: string): Promise<string | null> => {
 
   try {
     const data: GetSecretValueCommandOutput = await client.send(command);
-    console.log(data);
     if (data.SecretString) {
       return data.SecretString;
     }
@@ -222,27 +222,22 @@ const ipToBigInt = (address: string) => {
   }
 };
 
-const getSubnetMask = (bits: number, isIPv6 = false) => {
-  let mask = BigInt(0);
-  const totalBits = isIPv6 ? 128 : 32;
-  for (let i = 0; i < bits; i++) {
-    mask = mask * BigInt(2) + BigInt(1);
-  }
-  for (let i = bits; i < totalBits; i++) {
-    mask = mask * BigInt(2);
-  }
-  return mask;
-};
-
-const isIpInCidr = (address: string, cidr: string) => {
+const getSubnetRange = (cidr: string): { start: bigint; end: bigint } => {
   const [network, bits] = cidr.split('/');
   const isIPv6 = network.includes(':');
-  const ipBigInt = ipToBigInt(address);
+  const totalBits = isIPv6 ? 128 : 32;
   const networkBigInt = ipToBigInt(network);
-  const mask = getSubnetMask(parseInt(bits), isIPv6);
+  const hostBits = totalBits - parseInt(bits, 10);
+  const subnetSize = BigInt(2) ** BigInt(hostBits);
 
-  const maskedIp = ipBigInt - (ipBigInt % (mask + BigInt(1)));
-  const maskedNetwork = networkBigInt - (networkBigInt % (mask + BigInt(1)));
+  const start = networkBigInt - (networkBigInt % subnetSize);
+  const end = start + subnetSize - BigInt(1);
 
-  return maskedIp === maskedNetwork;
+  return { start, end };
+};
+
+const isIpInCidr = (ipAddr: string, cidr: string) => {
+  const ipBigInt = ipToBigInt(ipAddr);
+  const { start, end } = getSubnetRange(cidr);
+  return ipBigInt >= start && ipBigInt <= end;
 };
