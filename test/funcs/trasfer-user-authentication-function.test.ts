@@ -1,4 +1,4 @@
-import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
+import { SecretsManagerClient, GetSecretValueCommand, ResourceNotFoundException } from '@aws-sdk/client-secrets-manager';
 import { TransferFamilyAuthorizerEvent, TransferFamilyAuthorizerResult } from 'aws-lambda';
 import { mockClient } from 'aws-sdk-client-mock';
 import { handler } from '../../src/funcs/transfer-user-authentication.lambda';
@@ -135,6 +135,42 @@ describe('Transfer Family Authorizer Lambda', () => {
       HomeDirectoryType: 'LOGICAL',
       HomeDirectoryDetails: secretValue.HomeDirectoryDetails,
     });
+  });
+
+  it('should handle SFTP user successful password authentication (stored SecretBinary)', async () => {
+    const event: TransferFamilyAuthorizerEvent = {
+      serverId: 'server-id',
+      username: 'test-user',
+      protocol: 'SFTP',
+      sourceIp: '192.168.1.1',
+      password: 'password',
+    };
+
+    const secretId = `transfer-user/${event.serverId}/${event.username}`;
+    const secretValue = {
+      Password: 'password',
+      Role: 'example-sftp-user-role',
+      AcceptedIpNetworks: '192.168.1.1/32',
+      HomeDirectory: '/example-bucket/example-home/',
+    };
+
+    const returnObject = {
+      Role: secretValue.Role,
+      HomeDirectory: secretValue.HomeDirectory,
+    };
+
+    // Mock successful response from AWS Secrets Manager
+    secretsManagerMockClient
+      .on(GetSecretValueCommand, {
+        SecretId: secretId,
+      })
+      .resolves({
+        SecretBinary: Buffer.from(JSON.stringify(secretValue)),
+      });
+
+    const result: TransferFamilyAuthorizerResult = await handler(event);
+
+    expect(result).toEqual(returnObject);
   });
 
   it('should handle SFTP user successful ssh public key authentication', async () => {
@@ -459,7 +495,7 @@ describe('Transfer Family Authorizer Lambda', () => {
     expect(result).toEqual({});
   });
 
-  it('should handle secret manager resource empty', async () => {
+  it('should handle secret manager resource not found', async () => {
 
     const event: TransferFamilyAuthorizerEvent = {
       serverId: 'server-id',
@@ -470,39 +506,16 @@ describe('Transfer Family Authorizer Lambda', () => {
     };
 
     secretsManagerMockClient
-      .on(GetSecretValueCommand, {
-        SecretId: 'empty-secret',
-      })
-      .resolves({
-        SecretString: JSON.stringify({}),
-      });
+      .rejects(new ResourceNotFoundException({
+        $metadata: {
+          httpStatusCode: 404,
+        },
+        message: 'Secret not found',
+      }));
 
     const result: TransferFamilyAuthorizerResult = await handler(event);
 
     expect(result).toEqual({});
   });
 
-  //  it('should handle secret manager resource not found', async () => {
-  //
-  //    const event: TransferFamilyAuthorizerEvent = {
-  //      serverId: 'server-id',
-  //      username: 'test-user',
-  //      protocol: 'SFTP',
-  //      sourceIp: '192.168.1.1',
-  //      password: 'password',
-  //    };
-  //
-  //    secretsManagerMockClient
-  //      .on(GetSecretValueCommand, {
-  //        SecretId: 'not-found-secret',
-  //      })
-  //      .rejects(new ResourceNotFoundException({
-  //        message: "Secrets Manager can't find the specified secret.",
-  //        name: 'ResourceNotFoundException',
-  //      }));
-  //
-  //    const result: TransferFamilyAuthorizerResult = await handler(event);
-  //
-  //    expect(result).toEqual({});
-  //  });
 });
