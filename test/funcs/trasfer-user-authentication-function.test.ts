@@ -234,6 +234,35 @@ describe('Transfer Family Authorizer Lambda', () => {
     expect(result).toEqual({});
   });
 
+  it('should fail SFTP user authentication with no stored password', async () => {
+    const event: TransferFamilyAuthorizerEvent = {
+      serverId: 'server-id',
+      username: 'test-user',
+      protocol: 'SFTP',
+      sourceIp: '192.168.1.1',
+      password: 'password',
+    };
+
+    const secretId = `transfer-user/${event.serverId}/${event.username}`;
+
+    // Mock response from AWS Secrets Manager
+    secretsManagerMockClient
+      .on(GetSecretValueCommand, {
+        SecretId: secretId,
+      })
+      .resolves({
+        SecretString: JSON.stringify({
+          Role: 'example-sftp-user-role',
+          AcceptedIpNetworks: '192.168.1.1/32',
+          HomeDirectory: '/example-bucket/example-home/',
+        }),
+      });
+
+    const result: TransferFamilyAuthorizerResult = await handler(event);
+
+    expect(result).toEqual({});
+  });
+
   it('should fail FTP/S user authentication password is missing', async () => {
     const event: TransferFamilyAuthorizerEvent = {
       serverId: 'server-id',
