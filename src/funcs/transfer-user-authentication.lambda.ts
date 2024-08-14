@@ -1,6 +1,13 @@
 import { SecretsManagerClient, GetSecretValueCommand, GetSecretValueCommandOutput } from '@aws-sdk/client-secrets-manager';
 import { TransferFamilyAuthorizerEvent, TransferFamilyAuthorizerResult } from 'aws-lambda';
 
+export class EmptySecretValueError extends Error {
+  constructor() {
+    super('Got a secret value is empty.');
+    this.name = 'EmptySecretValueError';
+  }
+}
+
 interface SecretDict {
   [key: string]: string;
 }
@@ -155,30 +162,20 @@ const getSecret = async (id: string): Promise<string | null> => {
     region: 'ap-northeast-1',
   });
 
-  //  try {
-  //    const data: GetSecretValueCommandOutput = await client.send(command);
-  //    if (data.SecretString) {
-  //      return data.SecretString;
-  //    }
-  //    if (data.SecretBinary) {
-  //      return Buffer.from(data.SecretBinary).toString('utf-8');
-  //    }
-  //    return null;
-  //  } catch (error) {
-  //    console.log('Not found Secret');
-  //    console.log(`Error: ${JSON.stringify(error)}`);
-  //    return null;
-  //  }
   return client.send(new GetSecretValueCommand({ SecretId: id }))
     .then((data: GetSecretValueCommandOutput) => {
-      if (data?.SecretBinary) {
+      if (data.SecretBinary) {
+        console.log('Got SecretBinary value');
         return Buffer.from(data.SecretBinary).toString('utf-8');
       }
-      return data?.SecretString ? data.SecretString: null;
+      if (data.SecretString) {
+        console.log('Got SecretString value');
+        return data.SecretString;
+      }
+      throw new EmptySecretValueError();
     })
     .catch((error: Error) => {
-      console.log('Not found Secret');
-      console.log(`Error:${JSON.stringify(error)}`);
+      console.warn(error.message);
       return null;
     });
 };
