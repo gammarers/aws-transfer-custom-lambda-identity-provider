@@ -92,9 +92,9 @@
       "<rootDir>/node_modules/@gammarers/jest-aws-cdk-asset-filename-renamer"
     ],
     "testMatch": [
-      "<rootDir>/@(src|test)/**/*(*.)@(spec|test).ts?(x)",
+      "<rootDir>/@(src|test)/**/?(*.)+(spec|test).ts?(x)",
       "<rootDir>/@(src|test)/**/__tests__/**/*.ts?(x)",
-      "<rootDir>/@(projenrc)/**/*(*.)@(spec|test).ts?(x)",
+      "<rootDir>/@(projenrc)/**/?(*.)+(spec|test).ts?(x)",
       "<rootDir>/@(projenrc)/**/__tests__/**/*.ts?(x)"
     ],
     "clearMocks": true,
