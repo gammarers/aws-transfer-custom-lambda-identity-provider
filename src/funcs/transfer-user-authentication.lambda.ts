@@ -1,6 +1,13 @@
 import { SecretsManagerClient, GetSecretValueCommand, GetSecretValueCommandOutput } from '@aws-sdk/client-secrets-manager';
 import { TransferFamilyAuthorizerEvent, TransferFamilyAuthorizerResult } from 'aws-lambda';
 
+export class EmptySecretValueError extends Error {
+  constructor() {
+    super('Got a secret value is empty.');
+    this.name = 'EmptySecretValueError';
+  }
+}
+
 interface SecretDict {
   [key: string]: string;
 }
@@ -33,14 +40,20 @@ export const handler = async (event: TransferFamilyAuthorizerEvent): Promise<Tra
       return {};
     }
     console.log('Using SSH authentication');
-    authenticationType = 'SSH';
+    authenticationType = 'SSHPubKey';
   }
 
   const secret = await getSecret(`transfer-user/${inputServerId}/${inputUsername}`);
 
   if (secret) {
     const secretDict = JSON.parse(secret) as SecretDict;
-    const userAuthenticated = authenticateUser(authenticationType, secretDict, inputPassword, inputProtocol);
+    const userAuthenticated = (() => {
+      if (authenticationType === 'SSHPubKey') {
+        console.log('Skip password check as SSH login request');
+        return true;
+      }
+      return authenticatePasswordUser(secretDict, inputPassword, inputProtocol);
+    })();
     const ipMatch = checkIpAddress(secretDict, inputSourceIp, inputProtocol);
 
     if (userAuthenticated && ipMatch) {
@@ -66,44 +79,36 @@ const lookup = (secretDict: SecretDict, key: string, inputProtocol: string): str
 };
 
 const checkIpAddress = (secretDict: SecretDict, inputSourceIp: string, inputProtocol: string): boolean => {
-  const acceptedIpNetworkList = lookup(secretDict, 'AcceptedIpNetworkList', inputProtocol);
-  if (!acceptedIpNetworkList) {
-    console.log('No IP range provided - Skip IP check');
-    return true;
+  const acceptedIpNetworks = lookup(secretDict, 'AcceptedIpNetworks', inputProtocol);
+  console.log(`AcceptedIpNetworks: ${acceptedIpNetworks}`);
+  if (!acceptedIpNetworks) {
+    console.log('Unable to authenticate user - No filed match in Secret for AcceptedIpNetworks(CIDR format, comma-separated)');
+    return false;
   }
 
-  for (const acceptedIpNetwork of acceptedIpNetworkList.split(',')) {
-    if (isIpInCidr(inputSourceIp, acceptedIpNetwork)) {
+  for (const cidr of acceptedIpNetworks.split(',')) {
+    if (isIpInCidr(inputSourceIp, cidr)) {
       console.log('Source IP address match');
       return true;
     }
   }
-  //  if (new CIDRMatcher(acceptedIpNetworkList.split(',')).contains(inputSourceIp)) {
-  //    console.log('Source IP address match');
-  //    return true;
-  //  }
 
   console.log('Source IP address not in range');
   return false;
 };
 
-const authenticateUser = (authType: string, secretDict: SecretDict, inputPassword: string, inputProtocol: string): boolean => {
-  if (authType === 'SSH') {
-    console.log('Skip password check as SSH login request');
+const authenticatePasswordUser = (secretDict: SecretDict, inputPassword: string, inputProtocol: string): boolean => {
+  const password = lookup(secretDict, 'Password', inputProtocol);
+  if (!password) {
+    console.log('Unable to authenticate user - No field match in Secret for password');
+    return false;
+  }
+
+  if (inputPassword === password) {
     return true;
   } else {
-    const password = lookup(secretDict, 'Password', inputProtocol);
-    if (!password) {
-      console.log('Unable to authenticate user - No field match in Secret for password');
-      return false;
-    }
-
-    if (inputPassword === password) {
-      return true;
-    } else {
-      console.log('Unable to authenticate user - Incoming password does not match stored');
-      return false;
-    }
+    console.log('Unable to authenticate user - Incoming password does not match stored');
+    return false;
   }
 };
 
@@ -137,7 +142,7 @@ const buildResponse = (secretDict: SecretDict, authType: string, inputProtocol: 
     responseData.HomeDirectory = homeDirectory;
   }
 
-  if (authType === 'SSH') {
+  if (authType === 'SSHPubKey') {
     const publicKey = lookup(secretDict, 'PublicKey', inputProtocol);
     if (publicKey) {
       responseData.PublicKeys = [publicKey];
@@ -156,53 +161,23 @@ const getSecret = async (id: string): Promise<string | null> => {
   const client = new SecretsManagerClient({
     region: 'ap-northeast-1',
   });
-  const command = new GetSecretValueCommand({ SecretId: id });
 
-  try {
-    const data: GetSecretValueCommandOutput = await client.send(command);
-    console.log(data);
-    if (data.SecretString) {
-      return data.SecretString;
-    }
-    if (data.SecretBinary) {
-      return new TextDecoder().decode(data.SecretBinary);
-    }
-    return null;
-  } catch (error) {
-    console.log('Not found Secret');
-    console.log(`Error: ${JSON.stringify(error)}`);
-    return null;
-  }
-  //const resp = await client.send(command);
-//  return client.send(command)
-//    .then((data: GetSecretValueCommandOutput) => {
-//      if (data?.SecretString) {
-//        return data.SecretString;
-//      }
-//      if (data?.SecretBinary) {
-//        return new TextDecoder().decode(data.SecretBinary);
-//      }
-//      return null;
-//    })
-//    .catch((error: Error) => {
-//      console.log('Not found Secret');
-//      console.log(`Error:${JSON.stringify(error)}`);
-//      return null;
-//    });
-//  console.log(resp);
-//  if (resp.SecretString) {
-//    console.log('Found Secret String');
-//    return resp.SecretString;
-//  } else {
-//    if (resp.SecretBinary) {
-//      console.log('Found Binary Secret');
-//      //return Buffer.from(resp.SecretBinary as string, 'base64').toString('ascii');
-//      return new TextDecoder().decode(resp.SecretBinary);
-//    }
-//  }
-//
-//  console.log('Not found Secret');
-//  return null;
+  return client.send(new GetSecretValueCommand({ SecretId: id }))
+    .then((data: GetSecretValueCommandOutput) => {
+      if (data.SecretBinary) {
+        console.log('Got SecretBinary value');
+        return Buffer.from(data.SecretBinary).toString('utf-8');
+      }
+      if (data.SecretString) {
+        console.log('Got SecretString value');
+        return data.SecretString;
+      }
+      throw new EmptySecretValueError();
+    })
+    .catch((error: Error) => {
+      console.warn(error.message);
+      return null;
+    });
 };
 
 const ipToBigInt = (address: string) => {
@@ -225,27 +200,22 @@ const ipToBigInt = (address: string) => {
   }
 };
 
-const getSubnetMask = (bits: number, isIPv6 = false) => {
-  let mask = BigInt(0);
-  const totalBits = isIPv6 ? 128 : 32;
-  for (let i = 0; i < bits; i++) {
-    mask = mask * BigInt(2) + BigInt(1);
-  }
-  for (let i = bits; i < totalBits; i++) {
-    mask = mask * BigInt(2);
-  }
-  return mask;
-};
-
-const isIpInCidr = (address: string, cidr: string) => {
+const getSubnetRange = (cidr: string): { start: bigint; end: bigint } => {
   const [network, bits] = cidr.split('/');
   const isIPv6 = network.includes(':');
-  const ipBigInt = ipToBigInt(address);
+  const totalBits = isIPv6 ? 128 : 32;
   const networkBigInt = ipToBigInt(network);
-  const mask = getSubnetMask(parseInt(bits), isIPv6);
+  const hostBits = totalBits - parseInt(bits, 10);
+  const subnetSize = BigInt(2) ** BigInt(hostBits);
 
-  const maskedIp = ipBigInt - (ipBigInt % (mask + BigInt(1)));
-  const maskedNetwork = networkBigInt - (networkBigInt % (mask + BigInt(1)));
+  const start = networkBigInt - (networkBigInt % subnetSize);
+  const end = start + subnetSize - BigInt(1);
 
-  return maskedIp === maskedNetwork;
+  return { start, end };
+};
+
+const isIpInCidr = (ipAddr: string, cidr: string) => {
+  const ipBigInt = ipToBigInt(ipAddr);
+  const { start, end } = getSubnetRange(cidr);
+  return ipBigInt >= start && ipBigInt <= end;
 };
