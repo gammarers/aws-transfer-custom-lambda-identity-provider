@@ -528,6 +528,29 @@ describe('Transfer Family Authorizer Lambda', () => {
     expect(result).toEqual({});
   });
 
+  it('should fail stored empty secure', async () => {
+    const event: TransferFamilyAuthorizerEvent = {
+      serverId: 'server-id',
+      username: 'test-user',
+      protocol: 'SFTP',
+      sourceIp: '2001:db8::1',
+      password: 'password',
+    };
+
+    const secretId = `transfer-user/${event.serverId}/${event.username}`;
+
+    // Mock response from AWS Secrets Manager
+    secretsManagerMockClient
+      .on(GetSecretValueCommand, {
+        SecretId: secretId,
+      })
+      .resolves({});
+
+    const result: TransferFamilyAuthorizerResult = await handler(event);
+
+    expect(result).toEqual({});
+  });
+
   it('should handle secret manager resource not found', async () => {
 
     const event: TransferFamilyAuthorizerEvent = {
