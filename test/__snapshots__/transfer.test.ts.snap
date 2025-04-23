@@ -78,7 +78,7 @@ exports[`TransferCustomLambdaIdentityProvider Testing Should match snapshot 1`] 
             "Arn",
           ],
         },
-        "Runtime": "nodejs20.x",
+        "Runtime": "nodejs22.x",
       },
       "Type": "AWS::Lambda::Function",
     },
