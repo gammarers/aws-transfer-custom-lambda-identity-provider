@@ -56,7 +56,7 @@
       "description": "Create a JavaScript bundle from src/funcs/transfer-user-authentication.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/funcs/transfer-user-authentication.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/funcs/transfer-user-authentication.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/client-secrets-manager --sourcemap"
+          "exec": "esbuild --bundle src/funcs/transfer-user-authentication.lambda.ts --target=\"node22\" --platform=\"node\" --outfile=\"assets/funcs/transfer-user-authentication.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/client-secrets-manager --sourcemap"
         }
       ]
     },
@@ -65,7 +65,7 @@
       "description": "Continuously update the JavaScript bundle from src/funcs/transfer-user-authentication.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/funcs/transfer-user-authentication.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/funcs/transfer-user-authentication.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/client-secrets-manager --sourcemap --watch"
+          "exec": "esbuild --bundle src/funcs/transfer-user-authentication.lambda.ts --target=\"node22\" --platform=\"node\" --outfile=\"assets/funcs/transfer-user-authentication.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/client-secrets-manager --sourcemap --watch"
         }
       ]
     },
