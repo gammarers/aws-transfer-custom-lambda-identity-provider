@@ -4,9 +4,9 @@ const project = new awscdk.AwsCdkConstructLibrary({
   author: 'yicr',
   authorAddress: 'yicr@users.noreply.github.com',
   defaultReleaseBranch: 'main',
-  cdkVersion: '2.80.0',
-  typescriptVersion: '5.5.x',
-  jsiiVersion: '5.5.x',
+  cdkVersion: '2.189.1',
+  typescriptVersion: '5.8.x',
+  jsiiVersion: '5.8.x',
   projenrcTs: true,
   name: '@gammarers/aws-transfer-custom-lambda-identity-provider',
   description: 'This is a Simple Transfer AWS CDK Construct',
@@ -35,7 +35,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   },
   npmAccess: javascript.NpmAccess.PUBLIC,
   minNodeVersion: '16.0.0',
-  workflowNodeVersion: '22.4.x',
+  workflowNodeVersion: '22.x',
   depsUpgradeOptions: {
     workflowOptions: {
       labels: ['auto-approve', 'auto-merge'],
@@ -48,7 +48,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   },
   lambdaOptions: {
     // target node.js runtime
-    runtime: awscdk.LambdaRuntime.NODEJS_20_X,
+    runtime: awscdk.LambdaRuntime.NODEJS_22_X,
     bundlingOptions: {
       // list of node modules to exclude from the bundle
       externals: ['@aws-sdk/client-secrets-manager'],
