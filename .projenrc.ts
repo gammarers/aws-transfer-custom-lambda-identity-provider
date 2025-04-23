@@ -4,7 +4,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   author: 'yicr',
   authorAddress: 'yicr@users.noreply.github.com',
   defaultReleaseBranch: 'main',
-  cdkVersion: '2.80.0',
+  cdkVersion: '2.189.1',
   typescriptVersion: '5.5.x',
   jsiiVersion: '5.5.x',
   projenrcTs: true,
