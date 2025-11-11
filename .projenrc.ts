@@ -24,7 +24,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   ],
   jestOptions: {
     jestConfig: {
-      snapshotSerializers: ['<rootDir>/node_modules/@gammarers/jest-aws-cdk-asset-filename-renamer'],
+      snapshotSerializers: ['@gammarers/jest-aws-cdk-asset-filename-renamer'],
     },
     extraCliOptions: ['--silent'],
   },
