@@ -90,7 +90,7 @@
   "jest": {
     "coverageProvider": "v8",
     "snapshotSerializers": [
-      "<rootDir>/node_modules/@gammarers/jest-aws-cdk-asset-filename-renamer"
+      "@gammarers/jest-aws-cdk-asset-filename-renamer"
     ],
     "testMatch": [
       "<rootDir>/@(src|test)/**/*(*.)@(spec|test).ts?(x)",
